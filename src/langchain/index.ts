@@ -10,7 +10,7 @@ dotenv.config();
 export class HederaCreateFungibleTokenTool extends Tool {
   name = 'hedera_create_fungible_token'
 
-  description = `Create a fungible token on Hedera
+  description = `Create only one fungible token on Hedera
 Inputs ( input is a JSON string ):
 name: string, the name of the token e.g. My Token,
 symbol: string, the symbol of the token e.g. MT,

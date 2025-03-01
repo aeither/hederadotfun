@@ -1,4 +1,4 @@
-import { ChatCerebras } from '@langchain/cerebras';
+import { ChatGroq } from '@langchain/groq';
 import { HumanMessage } from '@langchain/core/messages';
 import { MemorySaver } from '@langchain/langgraph';
 import { createReactAgent } from '@langchain/langgraph/prebuilt';
@@ -11,9 +11,12 @@ let config: any = null;
 async function initializeAgent() {
   if (agent) return { agent, config };
 
-  const llm = new ChatCerebras({
-    model: "llama-3.3-70b"
+  const llm = new ChatGroq({
+    model: "qwen-2.5-32b",
   });
+  // const llm = new ChatCerebras({
+  //   model: "llama-3.3-70b"
+  // });
 
   const hederaKit = new HederaAgentKit(
     process.env.HEDERA_ACCOUNT_ID!,
@@ -28,7 +31,7 @@ async function initializeAgent() {
   agent = createReactAgent({
     llm,
     tools,
-    checkpointSaver: memory,
+    // checkpointSaver: memory,
     messageModifier: `
       You are a helpful AI assistant that can interact with the Hedera blockchain.
       You can perform on-chain actions using the Hedera Agent Kit tools.
@@ -36,7 +39,7 @@ async function initializeAgent() {
       If you need funds, you can request them from a faucet or from the user.
       If there is a 5XX error, ask the user to try again later.
       If asked to do something beyond your tools' capabilities, explain that limitation.
-      If user ask to create a token. Create only one.
+      If user ask to create a token. call create_token function only one.
     `,
   });
 
@@ -50,7 +53,7 @@ export async function POST(req: Request) {
     const { agent, config } = await initializeAgent();
 
     const stream = await agent.stream(
-      { messages: [new HumanMessage(message)] },
+      { messages: [new HumanMessage(message + "If i am asking to create a token. call and create only one. so dont call again if already have txHash")] },
       config
     );
 
