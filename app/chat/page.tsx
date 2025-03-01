@@ -1,9 +1,11 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card";
+import React from 'react';
+import { Button } from "../../components/ui/button";
+import { Input } from "../../components/ui/input";
+import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "../../components/ui/card";
+import { Header } from "../../components/header";
 
 interface Message {
   role: 'user' | 'assistant';
@@ -62,69 +64,74 @@ export default function Home() {
   }
 
   return (
-    <main className="flex min-h-screen flex-col items-center p-4 bg-gray-50">
-      <Card className="w-full max-w-4xl">
-        <CardHeader className="bg-primary">
-          <CardTitle className="text-2xl font-bold text-primary-foreground">Hedera Agent Chat</CardTitle>
-        </CardHeader>
-        
-        <CardContent className="p-0">
-          <div 
-            ref={chatContainerRef}
-            className="h-[600px] overflow-y-auto p-4 space-y-4"
-          >
-            {messages.map((message, index) => (
-              <div
-                key={index}
-                className={`flex ${
-                  message.role === 'user' ? 'justify-end' : 'justify-start'
-                }`}
+    <>
+      <Header />
+      <div className="container mx-auto px-4 py-8">
+        <main className="flex min-h-screen flex-col items-center p-4 bg-gray-50">
+          <Card className="w-full max-w-4xl">
+            <CardHeader className="bg-primary">
+              <CardTitle className="text-2xl font-bold text-primary-foreground">Hedera Agent Chat</CardTitle>
+            </CardHeader>
+            
+            <CardContent className="p-0">
+              <div 
+                ref={chatContainerRef}
+                className="h-[600px] overflow-y-auto p-4 space-y-4"
               >
-                <Card className={`max-w-[80%] ${
-                  message.role === 'user'
-                    ? 'bg-primary text-primary-foreground'
-                    : 'bg-muted'
-                }`}>
-                  <CardContent className="p-3">
-                    <pre className="whitespace-pre-wrap font-sans">
-                      {message.content}
-                    </pre>
-                  </CardContent>
-                </Card>
+                {messages.map((message, index) => (
+                  <div
+                    key={index}
+                    className={`flex ${
+                      message.role === 'user' ? 'justify-end' : 'justify-start'
+                    }`}
+                  >
+                    <Card className={`max-w-[80%] ${
+                      message.role === 'user'
+                        ? 'bg-primary text-primary-foreground'
+                        : 'bg-muted'
+                    }`}>
+                      <CardContent className="p-3">
+                        <pre className="whitespace-pre-wrap font-sans">
+                          {message.content}
+                        </pre>
+                      </CardContent>
+                    </Card>
+                  </div>
+                ))}
+                {isLoading && (
+                  <div className="flex justify-start">
+                    <Card className="bg-muted">
+                      <CardContent className="p-3">
+                        <div className="animate-pulse">Thinking...</div>
+                      </CardContent>
+                    </Card>
+                  </div>
+                )}
               </div>
-            ))}
-            {isLoading && (
-              <div className="flex justify-start">
-                <Card className="bg-muted">
-                  <CardContent className="p-3">
-                    <div className="animate-pulse">Thinking...</div>
-                  </CardContent>
-                </Card>
-              </div>
-            )}
-          </div>
-        </CardContent>
+            </CardContent>
 
-        <CardFooter className="p-4 border-t">
-          <form onSubmit={handleSubmit} className="flex w-full space-x-2">
-            <Input
-              type="text"
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              placeholder="Type your message..."
-              className="flex-1"
-              disabled={isLoading}
-            />
-            <Button
-              type="submit"
-              disabled={isLoading || !input.trim()}
-              variant="default"
-            >
-              Send
-            </Button>
-          </form>
-        </CardFooter>
-      </Card>
-    </main>
+            <CardFooter className="p-4 border-t">
+              <form onSubmit={handleSubmit} className="flex w-full space-x-2">
+                <Input
+                  type="text"
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  placeholder="Type your message..."
+                  className="flex-1"
+                  disabled={isLoading}
+                />
+                <Button
+                  type="submit"
+                  disabled={isLoading || !input.trim()}
+                  variant="default"
+                >
+                  Send
+                </Button>
+              </form>
+            </CardFooter>
+          </Card>
+        </main>
+      </div>
+    </>
   );
 }
