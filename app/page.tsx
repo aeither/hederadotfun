@@ -7,6 +7,7 @@ import { motion } from "framer-motion"
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input"
 import React from "react";
+import { Header } from "@/components/header";
 
 const fadeInUp = {
   initial: { opacity: 0, y: 20 },
@@ -25,48 +26,7 @@ const staggerChildren = {
 export default function Home() {
   return (
     <div className="flex min-h-screen flex-col bg-gradient-to-br from-background via-background to-primary/5">
-      <motion.header 
-        initial={{ y: -20, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.5 }}
-        className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60"
-      >
-        <div className="container flex h-16 items-center justify-between max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center gap-2">
-            <Zap className="h-6 w-6 text-primary" />
-            <span className="text-xl font-bold">hedera.fun</span>
-          </div>
-          <nav className="hidden md:flex items-center gap-6">
-            <Link href="#features" className="text-sm font-medium hover:text-primary">
-              Features
-            </Link>
-            <Link href="/tokens" className="text-sm font-medium hover:text-primary">
-              Tokens
-            </Link>
-            <Link href="#how-it-works" className="text-sm font-medium hover:text-primary">
-              How It Works
-            </Link>
-            <Link href="#tokenomics" className="text-sm font-medium hover:text-primary">
-              Tokenomics
-            </Link>
-            <Link href="#faq" className="text-sm font-medium hover:text-primary">
-              FAQ
-            </Link>
-          </nav>
-          <div className="flex items-center gap-4">
-            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-              <Button variant="outline" size="sm" className="hidden md:flex">
-                Documentation
-              </Button>
-            </motion.div>
-            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-              <Link href="/chat">
-                <Button size="sm">Launch App</Button>
-              </Link>
-            </motion.div>
-          </div>
-        </div>
-      </motion.header>
+      <Header />
       <main className="flex-1">
         <motion.section 
           initial={{ opacity: 0 }}

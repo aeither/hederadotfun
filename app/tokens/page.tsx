@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { createPublicClient, http, getContract } from 'viem';
+import { motion } from 'framer-motion';
 import { Button } from "../../components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../../components/ui/card";
 import { Skeleton } from "../../components/ui/skeleton";
@@ -75,15 +76,15 @@ export default function TokensPage() {
       try {
         setLoading(true);
         setError(null);
-        
+
         // Get all token IDs from the contract
         const storedTokenIds = await contract.read.getTokenIds() as string[];
-        
+
         // Fetch token info for each ID
         const tokenInfoPromises = storedTokenIds.map(id => getTokenInfo(id));
         const tokenInfos = await Promise.all(tokenInfoPromises);
         console.log("🚀 ~ fetchTokens ~ tokenInfos:", tokenInfos)
-        
+
         setTokens(tokenInfos);
       } catch (err) {
         console.error('Error fetching tokens:', err);
@@ -110,18 +111,28 @@ export default function TokensPage() {
   return (
     <>
       <Header />
-      <div className="container mx-auto px-4 py-8">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="container mx-auto px-4 py-8"
+      >
         <div className="space-y-6">
-          <div className="flex justify-between items-center">
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.2 }}
+            className="flex justify-between items-center"
+          >
             <h1 className="text-3xl font-bold">Available Tokens</h1>
             <Button onClick={() => window.location.reload()}>Refresh</Button>
-          </div>
-          
+          </motion.div>
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {loading ? (
               // Loading skeletons
               Array(6).fill(null).map((_, i) => (
-                <Card key={i} className="overflow-hidden">
+                <Card className="overflow-hidden">
                   <CardHeader>
                     <Skeleton className="h-6 w-3/4" />
                     <Skeleton className="h-4 w-1/2" />
@@ -137,40 +148,49 @@ export default function TokensPage() {
                 </Card>
               ))
             ) : (
-              tokens.map((token) => (
-                <Card key={token.token_id} className="overflow-hidden hover:shadow-lg transition-shadow">
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      {token.name}
-                      <span className="text-sm text-muted-foreground">({token.symbol})</span>
-                    </CardTitle>
-                    <CardDescription>ID: {token.token_id}</CardDescription>
-                  </CardHeader>
-                  <CardContent className="space-y-2">
-                    <div className="flex justify-between">
-                      <span className="text-sm text-muted-foreground">Total Supply</span>
-                      <span className="font-medium">{Number(token.total_supply).toLocaleString()}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-sm text-muted-foreground">Created</span>
-                      <span className="font-medium">{formatTimestamp(token.created_timestamp)}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-sm text-muted-foreground">Decimals</span>
-                      <span className="font-medium">{token.decimals}</span>
-                    </div>
-                  </CardContent>
-                  <CardFooter>
-                    <Button className="w-full" variant="outline">
-                      Buy Token
-                    </Button>
-                  </CardFooter>
-                </Card>
+              tokens.map((token, index) => (
+                <motion.div
+                  key={token.token_id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3, delay: index * 0.1 }}
+                  whileHover={{ scale: 1.02 }}
+                  className="h-full"
+                >
+                  <Card className="overflow-hidden hover:shadow-lg transition-shadow h-full">
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        {token.name}
+                        <span className="text-sm text-muted-foreground">({token.symbol})</span>
+                      </CardTitle>
+                      <CardDescription>ID: {token.token_id}</CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-2">
+                      <div className="flex justify-between">
+                        <span className="text-sm text-muted-foreground">Total Supply</span>
+                        <span className="font-medium">{Number(token.total_supply).toLocaleString()}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-sm text-muted-foreground">Created</span>
+                        <span className="font-medium">{formatTimestamp(token.created_timestamp)}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-sm text-muted-foreground">Decimals</span>
+                        <span className="font-medium">{token.decimals}</span>
+                      </div>
+                    </CardContent>
+                    <CardFooter>
+                      <Button className="w-full" variant="outline">
+                        Buy Token
+                      </Button>
+                    </CardFooter>
+                  </Card>
+                </motion.div>
               ))
             )}
           </div>
         </div>
-      </div>
+      </motion.div>
     </>
   );
 }
