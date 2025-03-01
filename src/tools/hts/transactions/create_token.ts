@@ -104,6 +104,7 @@ export const create_token = async (options: CreateTokenOptions): Promise<CreateT
     .setDecimals(options.decimals || 0)
     .setInitialSupply(options.initialSupply || 0)
     .setTreasuryAccountId(options.client.operatorAccountId!);
+    console.log("🚀 ~ constcreate_token= ~ create_token")
 
   // Optional and conditional parameters
   if (options.maxSupply) {
@@ -149,8 +150,9 @@ export const create_token = async (options: CreateTokenOptions): Promise<CreateT
     value: 0n,
     args: [receipt.tokenId.toString()],
   });
-  await walletClient.writeContract(request);
-
+  const hash = await walletClient.writeContract(request);
+  console.log("🚀 ~ constcreate_token= ~ hash:", hash)
+  
   return {
     status: txStatus.toString(),
     txHash: txResponse.transactionId.toString(),

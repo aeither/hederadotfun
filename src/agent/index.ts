@@ -49,7 +49,6 @@ import {
 } from "../types";
 import { AirdropRecipient } from "../tools/hts/transactions/airdrop";
 
-
 export default class HederaAgentKit {
 
   public client: Client

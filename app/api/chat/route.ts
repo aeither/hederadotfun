@@ -1,10 +1,9 @@
-import { NextResponse } from 'next/server';
-import { HederaAgentKit } from 'hedera-agent-kit';
 import { ChatCerebras } from '@langchain/cerebras';
-import { createReactAgent } from '@langchain/langgraph/prebuilt';
-import { MemorySaver } from '@langchain/langgraph';
 import { HumanMessage } from '@langchain/core/messages';
-import { createHederaTools } from '../../../src';
+import { MemorySaver } from '@langchain/langgraph';
+import { createReactAgent } from '@langchain/langgraph/prebuilt';
+import { NextResponse } from 'next/server';
+import { createHederaTools, HederaAgentKit } from '../../../src';
 
 let agent: any = null;
 let config: any = null;
@@ -37,6 +36,7 @@ async function initializeAgent() {
       If you need funds, you can request them from a faucet or from the user.
       If there is a 5XX error, ask the user to try again later.
       If asked to do something beyond your tools' capabilities, explain that limitation.
+      If user ask to create a token. Create only one.
     `,
   });
 
