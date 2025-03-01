@@ -1,6 +1,18 @@
 import { Client, TokenCreateTransaction, TokenSupplyType, TokenType } from "@hashgraph/sdk";
 import { CreateTokenResult } from "../../../types";
 
+import {
+  Address,
+  createWalletClient,
+  http,
+  publicActions
+} from "viem";
+import { privateKeyToAccount } from "viem/accounts"; // Convert private key to account
+import { hederaTestnet } from "viem/chains";
+import dotenv from 'dotenv';
+
+dotenv.config();
+
 export interface CreateTokenOptions {
   name: string;
   symbol: string;
@@ -16,14 +28,82 @@ export interface CreateTokenOptions {
   memo?: string;
 }
 
+const tokenStorageAddress = "0xa0b340ac3BfBcc741eAC47d4819E5deF63Fdf0A5";
+const tokenStorageAbi = [
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "_tokenId",
+        "type": "string"
+      }
+    ],
+    "name": "addTokenId",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  },
+  {
+    "inputs": [],
+    "name": "getTokenIds",
+    "outputs": [
+      {
+        "internalType": "string[]",
+        "name": "",
+        "type": "string[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "owner",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "tokenIds",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  }
+];
+
+
 export const create_token = async (options: CreateTokenOptions): Promise<CreateTokenResult> => {
   const tx = new TokenCreateTransaction()
-      .setTokenName(options.name)
-      .setTokenSymbol(options.symbol)
-      .setTokenType(options.tokenType)
-      .setDecimals(options.decimals || 0)
-      .setInitialSupply(options.initialSupply || 0)
-      .setTreasuryAccountId(options.client.operatorAccountId!);
+    .setTokenName(options.name)
+    .setTokenSymbol(options.symbol)
+    .setTokenType(options.tokenType)
+    .setDecimals(options.decimals || 0)
+    .setInitialSupply(options.initialSupply || 0)
+    .setTreasuryAccountId(options.client.operatorAccountId!);
 
   // Optional and conditional parameters
   if (options.maxSupply) {
@@ -50,6 +130,26 @@ export const create_token = async (options: CreateTokenOptions): Promise<CreateT
   const txStatus = receipt.status;
 
   if (!receipt.tokenId) throw new Error("Token Create Transaction failed");
+
+  const PRIVATE_KEY = process.env.HEDERA_ETHERS_PRIVATE_KEY as Address;
+
+  const account = privateKeyToAccount(PRIVATE_KEY);
+
+  const walletClient = createWalletClient({
+    account,
+    chain: hederaTestnet,
+    transport: http("https://testnet.hashio.io/api"),
+  }).extend(publicActions);
+
+  const { request } = await walletClient.simulateContract({
+    account,
+    address: tokenStorageAddress,
+    abi: tokenStorageAbi,
+    functionName: "addTokenId",
+    value: 0n,
+    args: [receipt.tokenId.toString()],
+  });
+  await walletClient.writeContract(request);
 
   return {
     status: txStatus.toString(),

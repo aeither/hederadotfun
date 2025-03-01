@@ -40,6 +40,9 @@ export default function Home() {
             <Link href="#features" className="text-sm font-medium hover:text-primary">
               Features
             </Link>
+            <Link href="/tokens" className="text-sm font-medium hover:text-primary">
+              Tokens
+            </Link>
             <Link href="#how-it-works" className="text-sm font-medium hover:text-primary">
               How It Works
             </Link>
@@ -97,16 +100,18 @@ export default function Home() {
                 </p>
                 <motion.div className="flex flex-col gap-2 min-[400px]:flex-row">
                   <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                  <Link href="/chat">
+                  <Link href="/tokens">
                     <Button size="lg" className="gap-1 bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary">
                       Start Trading <ArrowRight className="h-4 w-4" />
                     </Button>
                     </Link>
                   </motion.div>
                   <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                  <Link href="/chat">
                     <Button variant="outline" size="lg" className="border-primary/20">
-                      Learn More
+                      Create Token
                     </Button>
+                    </Link>
                   </motion.div>
                 </motion.div>
               </motion.div>
@@ -334,7 +339,7 @@ export default function Home() {
                 Experience the future of token creation on Hedera with our AI-powered assistant. No coding required.
               </p>
               <div className="flex flex-col gap-2 min-[400px]:flex-row pt-4">
-                <Button variant="secondary" size="lg" className="gap-1 bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary">
+                <Button variant="outline" size="lg" className="gap-1 bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary">
                   Try It Now <ArrowRight className="h-4 w-4" />
                 </Button>
                 <Button
