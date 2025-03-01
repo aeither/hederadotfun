@@ -13,7 +13,7 @@ interface TokenInfo {
   symbol: string;
   decimals: number;
   total_supply: string;
-  max_supply: string;
+  created_timestamp: string;
   treasury_account_id: string;
   custom_fees: {
     fixed_fees: any[];
@@ -56,6 +56,14 @@ const getTokenInfo = async (tokenId: string): Promise<TokenInfo> => {
   return response.json();
 };
 
+// Function to format the timestamp from nanoseconds to a readable date
+const formatTimestamp = (timestamp: string) => {
+  // Get only the integer part before the decimal point
+  const seconds = parseInt(timestamp.split('.')[0]);
+  const date = new Date(seconds * 1000);
+  return date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+};
+
 export default function TokensPage() {
   const [tokens, setTokens] = useState<TokenInfo[]>([]);
   const [loading, setLoading] = useState(true);
@@ -73,6 +81,7 @@ export default function TokensPage() {
         // Fetch token info for each ID
         const tokenInfoPromises = storedTokenIds.map(id => getTokenInfo(id));
         const tokenInfos = await Promise.all(tokenInfoPromises);
+        console.log("🚀 ~ fetchTokens ~ tokenInfos:", tokenInfos)
         
         setTokens(tokenInfos);
       } catch (err) {
@@ -140,8 +149,8 @@ export default function TokensPage() {
                     <span className="font-medium">{Number(token.total_supply).toLocaleString()}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-sm text-muted-foreground">Max Supply</span>
-                    <span className="font-medium">{Number(token.max_supply).toLocaleString()}</span>
+                    <span className="text-sm text-muted-foreground">Created</span>
+                    <span className="font-medium">{formatTimestamp(token.created_timestamp)}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-sm text-muted-foreground">Decimals</span>
