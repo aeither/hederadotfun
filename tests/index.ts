@@ -6,6 +6,7 @@ import { createReactAgent } from "@langchain/langgraph/prebuilt";
 import { HumanMessage } from "@langchain/core/messages";
 import * as dotenv from "dotenv";
 import * as readline from "readline";
+import { ChatCerebras } from "@langchain/cerebras";
 
 dotenv.config();
 
@@ -33,9 +34,12 @@ validateEnvironment();
 
 async function initializeAgent() {
   try {
-    const llm = new ChatOpenAI({
-      modelName: "gpt-4",
-      temperature: 0.7,
+    // const llm = new ChatOpenAI({
+    //   modelName: "gpt-4",
+    //   temperature: 0.7,
+    // });
+    const llm = new ChatCerebras({
+      model: "llama-3.3-70b"
     });
 
     // Initialize HederaAgentKit
