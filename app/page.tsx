@@ -323,16 +323,7 @@ export default function Home() {
             </p>
           </div>
           <div className="flex items-center gap-4">
-            <Link href="#" className="text-sm text-muted-foreground hover:text-foreground">
-              Terms
-            </Link>
-            <Link href="#" className="text-sm text-muted-foreground hover:text-foreground">
-              Privacy
-            </Link>
-            <Link href="#" className="text-sm text-muted-foreground hover:text-foreground">
-              Contact
-            </Link>
-            <Link href="#" className="text-muted-foreground hover:text-foreground">
+            <Link href="https://github.com/aeither/hederadotfun" className="text-muted-foreground hover:text-foreground">
               <Github className="h-5 w-5" />
               <span className="sr-only">GitHub</span>
             </Link>
