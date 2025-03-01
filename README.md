@@ -1,5 +1,9 @@
 # Hedera.fun
 
+# DEMO
+
+https://hederadotfun.vercel.app/
+
 <img width="1221" alt="SCR-20250301-ftmd" src="https://github.com/user-attachments/assets/ba29b25f-21a6-486f-a7a9-2cbff501716e" />
 
 
