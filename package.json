@@ -24,6 +24,7 @@
     "@langchain/openai": "^0.3.16",
     "bignumber.js": "^9.1.2",
     "dotenv": "^16.4.7",
+    "grammy": "^1.35.0",
     "hedera-agent-kit": "^1.0.4"
   },
   "repository": {
