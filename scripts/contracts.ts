@@ -121,7 +121,7 @@ const contract = getContract({
     }
 });
 
-const tokenId = "'0.0.5639536"; // Replace with your token ID
+const tokenId = "0.0.5639536"; // Replace with your token ID
 
 // Main function to execute the flow
 async function main() {
