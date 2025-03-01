@@ -134,7 +134,7 @@ export default function Home() {
                             className="cursor-pointer hover:bg-muted/50 transition-colors"
                             onClick={() => {
                               setInput(suggestion.text);
-                              const inputElement = document.querySelector('input[type="text"]');
+                              const inputElement = document.querySelector('input[type="text"]') as HTMLInputElement;
                               if (inputElement) {
                                 inputElement.focus();
                               }

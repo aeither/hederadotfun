@@ -6,10 +6,10 @@
   "scripts": {
     "test": "ts-node tests/index.ts",
     "prepare": "npm run build",
-    "build": "tsc",
+    "build:tsc": "tsc",
     "dev": "next dev --turbopack",
-    "web:build": "next build",
-    "web:start": "next start"
+    "build": "next build",
+    "start": "next start"
   },
   "keywords": [],
   "author": "",
