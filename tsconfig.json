@@ -10,7 +10,6 @@
     "declarationMap": true,
     "sourceMap": true,
     "outDir": "./dist",
-    "rootDir": "./src",
     "strict": true,
     "noImplicitAny": true,
     "strictBindCallApply": true,
@@ -46,7 +45,8 @@
     "src/**/*",
     ".next/types/**/*.ts",
     "app/**/*.{ts,tsx}",
-    "components/**/*.{ts,tsx}"
+    "components/**/*.{ts,tsx}",
+    "lib/**/*.{ts,tsx}"
   ],
   "exclude": [
     "node_modules",

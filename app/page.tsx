@@ -1,7 +1,9 @@
 'use client';
 
-import React from 'react';
 import { useState, useRef, useEffect } from 'react';
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card";
 
 interface Message {
   role: 'user' | 'assistant';
@@ -61,64 +63,68 @@ export default function Home() {
 
   return (
     <main className="flex min-h-screen flex-col items-center p-4 bg-gray-50">
-      <div className="w-full max-w-4xl bg-white rounded-lg shadow-lg overflow-hidden">
-        <div className="p-4 bg-blue-600 text-white">
-          <h1 className="text-2xl font-bold">Hedera Agent Chat</h1>
-        </div>
+      <Card className="w-full max-w-4xl">
+        <CardHeader className="bg-primary">
+          <CardTitle className="text-2xl font-bold text-primary-foreground">Hedera Agent Chat</CardTitle>
+        </CardHeader>
         
-        <div 
-          ref={chatContainerRef}
-          className="h-[600px] overflow-y-auto p-4 space-y-4"
-        >
-          {messages.map((message, index) => (
-            <div
-              key={index}
-              className={`flex ${
-                message.role === 'user' ? 'justify-end' : 'justify-start'
-              }`}
-            >
+        <CardContent className="p-0">
+          <div 
+            ref={chatContainerRef}
+            className="h-[600px] overflow-y-auto p-4 space-y-4"
+          >
+            {messages.map((message, index) => (
               <div
-                className={`max-w-[80%] rounded-lg p-3 ${
-                  message.role === 'user'
-                    ? 'bg-blue-600 text-white'
-                    : 'bg-gray-100 text-gray-900'
+                key={index}
+                className={`flex ${
+                  message.role === 'user' ? 'justify-end' : 'justify-start'
                 }`}
               >
-                <pre className="whitespace-pre-wrap font-sans">
-                  {message.content}
-                </pre>
+                <Card className={`max-w-[80%] ${
+                  message.role === 'user'
+                    ? 'bg-primary text-primary-foreground'
+                    : 'bg-muted'
+                }`}>
+                  <CardContent className="p-3">
+                    <pre className="whitespace-pre-wrap font-sans">
+                      {message.content}
+                    </pre>
+                  </CardContent>
+                </Card>
               </div>
-            </div>
-          ))}
-          {isLoading && (
-            <div className="flex justify-start">
-              <div className="bg-gray-100 rounded-lg p-3">
-                <div className="animate-pulse">Thinking...</div>
+            ))}
+            {isLoading && (
+              <div className="flex justify-start">
+                <Card className="bg-muted">
+                  <CardContent className="p-3">
+                    <div className="animate-pulse">Thinking...</div>
+                  </CardContent>
+                </Card>
               </div>
-            </div>
-          )}
-        </div>
+            )}
+          </div>
+        </CardContent>
 
-        <form onSubmit={handleSubmit} className="p-4 border-t">
-          <div className="flex space-x-2">
-            <input
+        <CardFooter className="p-4 border-t">
+          <form onSubmit={handleSubmit} className="flex w-full space-x-2">
+            <Input
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
               placeholder="Type your message..."
-              className="flex-1 p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="flex-1"
               disabled={isLoading}
             />
-            <button
+            <Button
               type="submit"
               disabled={isLoading || !input.trim()}
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
+              variant="default"
             >
               Send
-            </button>
-          </div>
-        </form>
-      </div>
+            </Button>
+          </form>
+        </CardFooter>
+      </Card>
     </main>
   );
 }
