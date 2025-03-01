@@ -66,17 +66,17 @@ export default function Home() {
   return (
     <>
       <Header />
-      <div className="container mx-auto px-4 py-8">
-        <main className="flex min-h-screen flex-col items-center p-4 bg-gray-50">
-          <Card className="w-full max-w-4xl">
-            <CardHeader className="bg-primary">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <main className="flex min-h-screen flex-col items-center ">
+          <Card className="w-full max-w-4xl rounded-xl shadow-lg overflow-hidden">
+            <CardHeader className="bg-primary rounded-t-xl px-6 py-4">
               <CardTitle className="text-2xl font-bold text-primary-foreground">Hedera Agent Chat</CardTitle>
             </CardHeader>
             
             <CardContent className="p-0">
               <div 
                 ref={chatContainerRef}
-                className="h-[600px] overflow-y-auto p-4 space-y-4"
+                className="h-[600px] overflow-y-auto p-6 space-y-4"
               >
                 {messages.map((message, index) => (
                   <div
@@ -85,12 +85,14 @@ export default function Home() {
                       message.role === 'user' ? 'justify-end' : 'justify-start'
                     }`}
                   >
-                    <Card className={`max-w-[80%] ${
-                      message.role === 'user'
-                        ? 'bg-primary text-primary-foreground'
-                        : 'bg-muted'
-                    }`}>
-                      <CardContent className="p-3">
+                    <Card 
+                      className={`max-w-[80%] shadow-md ${
+                        message.role === 'user'
+                          ? 'bg-primary text-primary-foreground rounded-2xl rounded-tr-sm'
+                          : 'bg-muted rounded-2xl rounded-tl-sm'
+                      }`}
+                    >
+                      <CardContent className="p-4">
                         <pre className="whitespace-pre-wrap font-sans">
                           {message.content}
                         </pre>
@@ -100,8 +102,8 @@ export default function Home() {
                 ))}
                 {isLoading && (
                   <div className="flex justify-start">
-                    <Card className="bg-muted">
-                      <CardContent className="p-3">
+                    <Card className="bg-muted rounded-2xl rounded-tl-sm shadow-md">
+                      <CardContent className="p-4">
                         <div className="animate-pulse">Thinking...</div>
                       </CardContent>
                     </Card>
@@ -110,20 +112,21 @@ export default function Home() {
               </div>
             </CardContent>
 
-            <CardFooter className="p-4 border-t">
-              <form onSubmit={handleSubmit} className="flex w-full space-x-2">
+            <CardFooter className="p-6 border-t">
+              <form onSubmit={handleSubmit} className="flex w-full space-x-3">
                 <Input
                   type="text"
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   placeholder="Type your message..."
-                  className="flex-1"
+                  className="flex-1 rounded-full px-4 py-2"
                   disabled={isLoading}
                 />
                 <Button
                   type="submit"
                   disabled={isLoading || !input.trim()}
                   variant="default"
+                  className="rounded-full px-6"
                 >
                   Send
                 </Button>
