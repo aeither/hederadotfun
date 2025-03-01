@@ -1,4 +1,4 @@
-import { Client, TokenId, TokenMintTransaction } from "@hashgraph/sdk";
+import { Client, TokenId, TokenMintTransaction, TransferTransaction, AccountId } from "@hashgraph/sdk";
 import { NextResponse } from "next/server";
 
 type AccountDetails = {
@@ -14,7 +14,6 @@ type AccountDetails = {
     }>;
   };
 };
-
 
 // Initialize Hedera client
 const client = Client.forTestnet();
@@ -33,13 +32,33 @@ interface MintTokenResult {
   txHash: string;
 }
 
+interface TransferTokenResult {
+  status: string;
+  txHash: string;
+}
+
+async function getHederaAccount(ethAddress: string): Promise<string | null> {
+  try {
+    const response = await fetch(`https://testnet.mirrornode.hedera.com/api/v1/accounts/${ethAddress}`);
+    if (!response.ok) {
+      return null;
+    }
+    const accountDetails: AccountDetails = await response.json();
+    return accountDetails.account || null;
+  } catch (error) {
+    console.error("Error fetching Hedera account:", error);
+    return null;
+  }
+}
+
 async function mintToken(
   tokenId: TokenId,
   amount: number
 ): Promise<MintTokenResult> {
+  const adjustedAmount = amount * 100; // Adjust for decimals
   const tx = await new TokenMintTransaction()
     .setTokenId(tokenId)
-    .setAmount(amount)
+    .setAmount(adjustedAmount)
     .freezeWith(client);
 
   const txResponse = await tx.execute(client);
@@ -56,9 +75,42 @@ async function mintToken(
   };
 }
 
+async function transferToken(
+  tokenId: TokenId,
+  toAccountId: string,
+  amount: number
+): Promise<TransferTokenResult> {
+  const adjustedAmount = amount * 100; // Adjust for decimals
+  const tx = new TransferTransaction()
+    .addTokenTransfer(tokenId, client.operatorAccountId!, -adjustedAmount)
+    .addTokenTransfer(tokenId, toAccountId, adjustedAmount);
+
+  const txResponse = await tx.execute(client);
+  const receipt = await txResponse.getReceipt(client);
+  const txStatus = receipt.status;
+
+  if (!txStatus.toString().includes("SUCCESS")) {
+    throw new Error("Token Transfer Transaction failed");
+  }
+
+  return {
+    status: txStatus.toString(),
+    txHash: txResponse.transactionId.toString(),
+  };
+}
+
 export async function POST(request: Request) {
   try {
     const { txHash, userAddress, tokenId, amount } = await request.json();
+
+    // Get the user's Hedera account ID from their ETH address
+    const hederaAccountId = await getHederaAccount(userAddress);
+    if (!hederaAccountId) {
+      return NextResponse.json(
+        { success: false, error: "No associated Hedera account found" },
+        { status: 400 }
+      );
+    }
 
     // Verify the payment transaction
     // TODO: Add transaction verification logic here
@@ -67,19 +119,26 @@ export async function POST(request: Request) {
     // 2. The amount is correct (5 tokens)
     // 3. The recipient address matches your expected address
 
-    
-    // Mint tokens to the user
-    const result = await mintToken(TokenId.fromString(tokenId), amount);
+    // First mint tokens to the treasury account
+    const mintResult = await mintToken(TokenId.fromString(tokenId), amount);
+
+    // Then transfer tokens to the user's Hedera account
+    const transferResult = await transferToken(
+      TokenId.fromString(tokenId),
+      hederaAccountId,
+      amount
+    );
 
     return NextResponse.json({
       success: true,
-      ...result,
-      userAddress,
+      mint: mintResult,
+      transfer: transferResult,
+      hederaAccountId,
     });
   } catch (error) {
     console.error("Error in mint endpoint:", error);
     return NextResponse.json(
-      { success: false, error: "Failed to mint token" },
+      { success: false, error: "Failed to process token transaction" },
       { status: 500 }
     );
   }

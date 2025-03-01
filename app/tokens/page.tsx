@@ -1,15 +1,14 @@
 "use client";
 
-import { useEffect, useState } from 'react';
-import { createPublicClient, http, getContract, parseEther } from 'viem';
 import { motion } from 'framer-motion';
+import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
+import { createPublicClient, getContract, http, parseEther } from 'viem';
+import { useAccount, useSendTransaction } from 'wagmi';
+import { Header } from "../../components/header";
 import { Button } from "../../components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../../components/ui/card";
 import { Skeleton } from "../../components/ui/skeleton";
-import { Header } from "../../components/header";
-import { useAccount, useSendTransaction, useWaitForTransaction } from 'wagmi';
-import { toast } from 'sonner';
-import React from 'react';
 
 interface TokenInfo {
   token_id: string;
@@ -83,7 +82,7 @@ export default function TokensPage() {
 
     try {
       const tx = await sendTransactionAsync({
-        to: '0xF80A5B8cFF2160B17F63053B4FC7326E08D597D9',
+        to: '0xAa13389170eDFA2f4E26C35d0782146180FB9EfC',
         value: parseEther('5'),
       });
 
@@ -104,7 +103,8 @@ export default function TokensPage() {
           });
 
           if (!response.ok) {
-            throw new Error('Failed to mint tokens');
+            const error = await response.json();
+            throw new Error(error.error || 'Failed to mint tokens');
           }
 
           const data = await response.json();
@@ -113,13 +113,13 @@ export default function TokensPage() {
         {
           loading: 'Processing your purchase...',
           success: (data) => ({
-            message: 'Successfully purchased tokens!',
+            message: `Successfully purchased tokens! Sent to Hedera account ${data.hederaAccountId}`,
             action: {
-              label: 'View Transaction',
-              onClick: () => window.open(`https://hashscan.io/testnet/transaction/${data.txHash}`, '_blank'),
+              label: 'View Transfer',
+              onClick: () => window.open(`https://hashscan.io/testnet/transaction/${data.transfer.txHash}`, '_blank'),
             },
           }),
-          error: 'Failed to complete the purchase',
+          error: (err) => err.message || 'Failed to complete the purchase',
         }
       );
     } catch (err) {
