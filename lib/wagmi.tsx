@@ -7,12 +7,7 @@ import {
 } from '@rainbow-me/rainbowkit';
 import { WagmiProvider } from 'wagmi';
 import {
-  mainnet,
-  polygon,
-  optimism,
-  arbitrum,
-  base,
-  sepolia
+  hederaTestnet
 } from 'wagmi/chains';
 import {
   QueryClientProvider,
@@ -23,7 +18,7 @@ import React from 'react';
 const config = getDefaultConfig({
   appName: 'Hedera Agent Kit',
   projectId: 'YOUR_PROJECT_ID', // Replace with your WalletConnect project ID
-  chains: [sepolia], // Using Sepolia testnet for development
+  chains: [hederaTestnet], // Using Sepolia testnet for development
   ssr: true,
 });
 

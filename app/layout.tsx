@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { WagmiWrapper } from "../lib/wagmi";
+import { Toaster } from 'sonner';
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -20,6 +21,7 @@ export default function RootLayout({
       <body className={inter.className}>
         <WagmiWrapper>
           {children}
+          <Toaster richColors position="top-right" />
         </WagmiWrapper>
       </body>
     </html>

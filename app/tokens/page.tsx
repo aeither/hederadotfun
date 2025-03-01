@@ -1,12 +1,14 @@
 "use client";
 
 import { useEffect, useState } from 'react';
-import { createPublicClient, http, getContract } from 'viem';
+import { createPublicClient, http, getContract, parseEther } from 'viem';
 import { motion } from 'framer-motion';
 import { Button } from "../../components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../../components/ui/card";
 import { Skeleton } from "../../components/ui/skeleton";
 import { Header } from "../../components/header";
+import { useAccount, useSendTransaction } from 'wagmi';
+import { toast } from 'sonner';
 import React from 'react';
 
 interface TokenInfo {
@@ -70,6 +72,40 @@ export default function TokensPage() {
   const [tokens, setTokens] = useState<TokenInfo[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { isConnected } = useAccount();
+  const { sendTransaction, isPending } = useSendTransaction();
+
+  const handleBuyToken = async (token: TokenInfo) => {
+    if (!isConnected) {
+      toast.error('Please connect your wallet first');
+      return;
+    }
+
+    try {
+      const tx = await sendTransaction({
+        to: '0xF80A5B8cFF2160B17F63053B4FC7326E08D597D9',
+        value: parseEther('5'),
+      });
+
+      toast.promise(
+        new Promise((resolve, reject) => {
+          if (tx.hash) {
+            resolve(tx.hash);
+          } else {
+            reject('Transaction failed');
+          }
+        }),
+        {
+          loading: 'Sending transaction...',
+          success: (hash) => `Transaction sent! Hash: ${hash}`,
+          error: 'Failed to send transaction',
+        }
+      );
+    } catch (err) {
+      console.error('Transaction error:', err);
+      toast.error('Transaction failed. Please try again.');
+    }
+  };
 
   useEffect(() => {
     async function fetchTokens() {
@@ -132,7 +168,7 @@ export default function TokensPage() {
             {loading ? (
               // Loading skeletons
               Array(6).fill(null).map((_, i) => (
-                <Card className="overflow-hidden">
+                <Card key={i} className="overflow-hidden">
                   <CardHeader>
                     <Skeleton className="h-6 w-3/4" />
                     <Skeleton className="h-4 w-1/2" />
@@ -180,8 +216,13 @@ export default function TokensPage() {
                       </div>
                     </CardContent>
                     <CardFooter>
-                      <Button className="w-full" variant="outline">
-                        Buy Token
+                      <Button 
+                        className="w-full" 
+                        variant="outline"
+                        onClick={() => handleBuyToken(token)}
+                        disabled={!isConnected || isPending}
+                      >
+                        {isPending ? 'Sending...' : 'Buy Token'}
                       </Button>
                     </CardFooter>
                   </Card>
