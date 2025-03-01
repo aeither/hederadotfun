@@ -2,16 +2,36 @@
 
 import Link from "next/link"
 import { ArrowRight, Github, MessageSquare, Shield, Zap } from "lucide-react"
+import { motion } from "framer-motion"
 
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input"
 import React from "react";
 
+const fadeInUp = {
+  initial: { opacity: 0, y: 20 },
+  animate: { opacity: 1, y: 0 },
+  transition: { duration: 0.5 }
+};
+
+const staggerChildren = {
+  animate: {
+    transition: {
+      staggerChildren: 0.1
+    }
+  }
+};
+
 export default function Home() {
   return (
-    <div className="flex min-h-screen flex-col">
-      <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container flex h-16 items-center justify-between">
+    <div className="flex min-h-screen flex-col bg-gradient-to-br from-background via-background to-primary/5">
+      <motion.header 
+        initial={{ y: -20, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.5 }}
+        className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60"
+      >
+        <div className="container flex h-16 items-center justify-between max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center gap-2">
             <Zap className="h-6 w-6 text-primary" />
             <span className="text-xl font-bold">hedera.fun</span>
@@ -31,42 +51,72 @@ export default function Home() {
             </Link>
           </nav>
           <div className="flex items-center gap-4">
-            <Button variant="outline" size="sm" className="hidden md:flex">
-              Documentation
-            </Button>
-            <Link href="/chat">
-              <Button size="sm">Launch App</Button>
-            </Link>
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+              <Button variant="outline" size="sm" className="hidden md:flex">
+                Documentation
+              </Button>
+            </motion.div>
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+              <Link href="/chat">
+                <Button size="sm">Launch App</Button>
+              </Link>
+            </motion.div>
           </div>
         </div>
-      </header>
+      </motion.header>
       <main className="flex-1">
-        <section className="py-20 md:py-28">
-          <div className="container px-4 md:px-6">
+        <motion.section 
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          transition={{ duration: 0.8 }}
+          viewport={{ once: true }}
+          className="py-20 md:py-28"
+        >
+          <div className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="grid gap-6 lg:grid-cols-2 lg:gap-12 items-center">
-              <div className="flex flex-col justify-center space-y-4">
-                <div className="inline-block rounded-lg bg-muted px-3 py-1 text-sm mb-2">Powered by Hedera</div>
-                <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none">
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6 }}
+                className="flex flex-col justify-center space-y-4 max-w-2xl mx-auto lg:mx-0"
+              >
+                <motion.div 
+                  whileHover={{ scale: 1.05 }}
+                  className="inline-block rounded-lg bg-muted px-3 py-1 text-sm mb-2"
+                >
+                  Powered by Hedera
+                </motion.div>
+                <motion.h1 
+                  className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none bg-gradient-to-r from-primary to-primary/50 bg-clip-text text-transparent"
+                >
                   The Secure Token Launching Platform
-                </h1>
+                </motion.h1>
                 <p className="max-w-[600px] text-muted-foreground md:text-xl">
                   Create and trade tokens with confidence on Hedera's fastest and most secure network. Fair launches, no
                   presales, no team allocations.
                 </p>
-                <div className="flex flex-col gap-2 min-[400px]:flex-row">
-                  <Button size="lg" className="gap-1">
-                    Start Trading <ArrowRight className="h-4 w-4" />
-                  </Button>
-                  <Button variant="outline" size="lg">
-                    Learn More
-                  </Button>
-                </div>
-                <div className="pt-4">
-                  <div className="inline-block rounded-lg bg-muted/50 px-3 py-1 text-sm">Hackathon Project</div>
-                </div>
-              </div>
-              <div className="mx-auto lg:mx-0 relative">
-                <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-secondary/20 rounded-lg blur-3xl opacity-50" />
+                <motion.div className="flex flex-col gap-2 min-[400px]:flex-row">
+                  <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                  <Link href="/chat">
+                    <Button size="lg" className="gap-1 bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary">
+                      Start Trading <ArrowRight className="h-4 w-4" />
+                    </Button>
+                    </Link>
+                  </motion.div>
+                  <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                    <Button variant="outline" size="lg" className="border-primary/20">
+                      Learn More
+                    </Button>
+                  </motion.div>
+                </motion.div>
+              </motion.div>
+              <motion.div 
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.6 }}
+                className="mx-auto lg:mx-0 relative"
+              >
+                <div className="absolute inset-0 bg-gradient-to-r from-primary/30 via-secondary/30 to-primary/30 rounded-lg blur-3xl opacity-50 animate-pulse" />
                 <div className="relative bg-background border rounded-lg shadow-lg overflow-hidden">
                   <div className="p-4 border-b bg-muted/50">
                     <div className="flex items-center gap-2">
@@ -110,14 +160,21 @@ export default function Home() {
                     </div>
                   </div>
                 </div>
-              </div>
+              </motion.div>
             </div>
           </div>
-        </section>
+        </motion.section>
 
-        <section id="features" className="py-16 bg-muted/50">
-          <div className="container px-4 md:px-6">
-            <div className="flex flex-col items-center justify-center space-y-4 text-center">
+        <motion.section 
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          transition={{ duration: 0.8 }}
+          viewport={{ once: true }}
+          id="features" 
+          className="py-16 bg-gradient-to-br from-muted/50 via-background to-muted/30"
+        >
+          <div className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex flex-col items-center justify-center space-y-4 text-center max-w-3xl mx-auto">
               <div className="space-y-2">
                 <div className="inline-block rounded-lg bg-primary/20 px-3 py-1 text-sm text-primary">Features</div>
                 <h2 className="text-3xl font-bold tracking-tighter md:text-4xl">Why Choose hedera.fun?</h2>
@@ -127,43 +184,58 @@ export default function Home() {
                 </p>
               </div>
             </div>
-            <div className="mx-auto grid max-w-5xl grid-cols-1 gap-6 py-12 md:grid-cols-3">
-              <div className="flex flex-col items-center space-y-4 rounded-lg border p-6 shadow-sm">
-                <div className="rounded-full bg-primary/20 p-3">
-                  <MessageSquare className="h-6 w-6 text-primary" />
-                </div>
-                <h3 className="text-xl font-bold">Natural Language Creation</h3>
-                <p className="text-center text-muted-foreground">
-                  Create tokens using simple conversation with our AI assistant. No technical knowledge required.
-                </p>
-              </div>
-              <div className="flex flex-col items-center space-y-4 rounded-lg border p-6 shadow-sm">
-                <div className="rounded-full bg-primary/20 p-3">
-                  <Zap className="h-6 w-6 text-primary" />
-                </div>
-                <h3 className="text-xl font-bold">Hedera Native</h3>
-                <p className="text-center text-muted-foreground">
-                  Built on Hedera's high-performance network with carbon-negative footprint and minimal transaction
-                  fees.
-                </p>
-              </div>
-              <div className="flex flex-col items-center space-y-4 rounded-lg border p-6 shadow-sm">
-                <div className="rounded-full bg-primary/20 p-3">
-                  <Shield className="h-6 w-6 text-primary" />
-                </div>
-                <h3 className="text-xl font-bold">Enterprise Ready</h3>
-                <p className="text-center text-muted-foreground">
-                  Leverage Hedera's security and compliance features for building real-world applications with
-                  confidence.
-                </p>
-              </div>
-            </div>
+            <motion.div 
+              variants={staggerChildren}
+              initial="initial"
+              whileInView="animate"
+              viewport={{ once: true }}
+              className="mx-auto grid max-w-5xl grid-cols-1 gap-8 py-12 md:grid-cols-3"
+            >
+              {[
+                {
+                  icon: <MessageSquare className="h-6 w-6 text-primary" />,
+                  title: "Natural Language Creation",
+                  description: "Create tokens using simple conversation with our AI assistant. No technical knowledge required."
+                },
+                {
+                  icon: <Zap className="h-6 w-6 text-primary" />,
+                  title: "Hedera Native",
+                  description: "Built on Hedera's high-performance network with carbon-negative footprint and minimal transaction fees."
+                },
+                {
+                  icon: <Shield className="h-6 w-6 text-primary" />,
+                  title: "Enterprise Ready",
+                  description: "Leverage Hedera's security and compliance features for building real-world applications with confidence."
+                }
+              ].map((feature, index) => (
+                <motion.div
+                  key={index}
+                  variants={fadeInUp}
+                  className="flex flex-col items-center space-y-4 rounded-lg border p-6 shadow-sm hover:shadow-lg transition-shadow duration-300 bg-gradient-to-br from-background to-muted/20"
+                >
+                  <div className="rounded-full bg-primary/20 p-3">
+                    {feature.icon}
+                  </div>
+                  <h3 className="text-xl font-bold">{feature.title}</h3>
+                  <p className="text-center text-muted-foreground">
+                    {feature.description}
+                  </p>
+                </motion.div>
+              ))}
+            </motion.div>
           </div>
-        </section>
+        </motion.section>
 
-        <section id="how-it-works" className="py-16">
-          <div className="container px-4 md:px-6">
-            <div className="flex flex-col items-center justify-center space-y-4 text-center">
+        <motion.section 
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          transition={{ duration: 0.8 }}
+          viewport={{ once: true }}
+          id="how-it-works" 
+          className="py-16"
+        >
+          <div className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex flex-col items-center justify-center space-y-4 text-center max-w-3xl mx-auto">
               <div className="space-y-2">
                 <div className="inline-block rounded-lg bg-primary/20 px-3 py-1 text-sm text-primary">Process</div>
                 <h2 className="text-3xl font-bold tracking-tighter md:text-4xl">How It Works</h2>
@@ -172,7 +244,7 @@ export default function Home() {
                 </p>
               </div>
             </div>
-            <div className="mx-auto grid max-w-5xl gap-6 py-12 md:grid-cols-2 lg:gap-12">
+            <div className="mx-auto grid max-w-5xl gap-8 py-12 md:grid-cols-2 lg:gap-12">
               <div className="space-y-6">
                 {[
                   {
@@ -199,7 +271,7 @@ export default function Home() {
                     step: 5,
                     title: "Liquidity management",
                     description: "17% of liquidity is deposited in raydium and burned for long-term sustainability.",
-                  },
+                  }
                 ].map((item) => (
                   <div key={item.step} className="flex gap-4">
                     <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground">
@@ -246,17 +318,23 @@ export default function Home() {
               </div>
             </div>
           </div>
-        </section>
+        </motion.section>
 
-        <section className="py-16 bg-primary text-primary-foreground">
-          <div className="container px-4 md:px-6">
-            <div className="flex flex-col items-center justify-center space-y-4 text-center">
+        <motion.section 
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          transition={{ duration: 0.8 }}
+          viewport={{ once: true }}
+          className="py-16 bg-gradient-to-br from-primary via-primary to-primary/80 text-primary-foreground"
+        >
+          <div className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex flex-col items-center justify-center space-y-4 text-center max-w-3xl mx-auto">
               <h2 className="text-3xl font-bold tracking-tighter md:text-4xl">Ready to create your token?</h2>
               <p className="text-primary-foreground/80 md:text-xl max-w-[800px]">
                 Experience the future of token creation on Hedera with our AI-powered assistant. No coding required.
               </p>
               <div className="flex flex-col gap-2 min-[400px]:flex-row pt-4">
-                <Button variant="secondary" size="lg" className="gap-1">
+                <Button variant="secondary" size="lg" className="gap-1 bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary">
                   Try It Now <ArrowRight className="h-4 w-4" />
                 </Button>
                 <Button
@@ -269,10 +347,10 @@ export default function Home() {
               </div>
             </div>
           </div>
-        </section>
+        </motion.section>
       </main>
       <footer className="border-t py-6 md:py-0">
-        <div className="container flex flex-col items-center justify-between gap-4 md:h-24 md:flex-row">
+        <div className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center justify-between gap-4 md:h-24 md:flex-row">
           <div className="flex items-center gap-2">
             <Zap className="h-5 w-5 text-primary" />
             <p className="text-sm text-muted-foreground">
