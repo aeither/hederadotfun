@@ -1,16 +1,15 @@
-import { Client, TokenInfoQuery } from "@hashgraph/sdk";
 import { createWalletClient, createPublicClient, http, getContract } from 'viem';
 import { privateKeyToAccount } from 'viem/accounts';
 import * as dotenv from 'dotenv';
 dotenv.config();
 
-// Function to get token information
-export const getTokenInfo = async (client: Client, tokenId: string) => {
-    const tokenInfo = await new TokenInfoQuery()
-        .setTokenId(tokenId)
-        .execute(client);
-
-    return tokenInfo;
+// Function to get token information from Mirror Node
+const getTokenInfo = async (tokenId: string) => {
+    const response = await fetch(`https://testnet.mirrornode.hedera.com/api/v1/tokens/${tokenId}`);
+    if (!response.ok) {
+        throw new Error(`Failed to fetch token info: ${response.statusText}`);
+    }
+    return response.json();
 };
 
 // Example usage for Hedera
@@ -21,13 +20,17 @@ if (!accountId || !privateKey) {
     throw new Error("Environment variables HEDERA_ACCOUNT_ID and HEDERA_PRIVATE_KEY must be present");
 }
 
-const hederaClient = Client.forTestnet();
-hederaClient.setOperator(accountId, privateKey);
+// Check for Ethereum private key
+const ethPrivateKey = process.env.ETH_PRIVATE_KEY;
+if (!ethPrivateKey) {
+    throw new Error("Environment variable ETH_PRIVATE_KEY must be present");
+}
 
-const tokenId = "0.0.5615279"; // Replace with your token ID
+// Ensure private key has 0x prefix
+const formattedPrivateKey = ethPrivateKey.startsWith('0x') ? ethPrivateKey as `0x${string}`: `0x${ethPrivateKey}` as `0x${string}`;
 
 // Ethereum wallet setup for viem
-const account = privateKeyToAccount(process.env.ETH_PRIVATE_KEY as `0x${string}`);
+const account = privateKeyToAccount(formattedPrivateKey);
 const rpcUrl = process.env.RPC_URL || 'https://testnet.hashio.io/api';
 
 // Create wallet client for writing to the contract
@@ -118,25 +121,27 @@ const contract = getContract({
     }
 });
 
+const tokenId = "'0.0.5639536"; // Replace with your token ID
+
 // Main function to execute the flow
 async function main() {
     try {
-        // Get token info from Hedera
-        const tokenInfo = await getTokenInfo(hederaClient, tokenId);
+        // Get token info from Mirror Node
+        const tokenInfo = await getTokenInfo(tokenId.replace(/'/g, ''));
         console.log("Token Info:", tokenInfo);
         
-        // Store the token ID in the smart contract
-        console.log(`Storing token ID ${tokenId} in the contract...`);
+        // // Store the token ID in the smart contract
+        // console.log(`Storing token ID ${tokenId} in the contract...`);
         
-        // Call the contract's addTokenId function
-        const hash = await contract.write.addTokenId([tokenId]);
-        console.log(`Transaction submitted with hash: ${hash}`);
+        // // Call the contract's addTokenId function
+        // const hash = await contract.write.addTokenId([tokenId]);
+        // console.log(`Transaction submitted with hash: ${hash}`);
         
-        // Wait for transaction to be mined
-        const receipt = await publicClient.waitForTransactionReceipt({ hash });
-        console.log("Transaction confirmed in block:", receipt.blockNumber);
+        // // Wait for transaction to be mined
+        // const receipt = await publicClient.waitForTransactionReceipt({ hash });
+        // console.log("Transaction confirmed in block:", receipt.blockNumber);
         
-        // Verify the token was added by reading from the contract
+        // // Verify the token was added by reading from the contract
         const storedTokens = await contract.read.getTokenIds();
         console.log("Stored tokens:", storedTokens);
     } catch (error) {

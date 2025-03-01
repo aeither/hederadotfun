@@ -89,11 +89,11 @@ export default function Home() {
                 <motion.h1 
                   className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none bg-gradient-to-r from-primary to-primary/50 bg-clip-text text-transparent"
                 >
-                  The Secure Token Launching Platform
+                  Trade & Create Tokens on Hedera
                 </motion.h1>
                 <p className="max-w-[600px] text-muted-foreground md:text-xl">
-                  Create and trade tokens with confidence on Hedera's fastest and most secure network. Fair launches, no
-                  presales, no team allocations.
+                  The easiest way to trade existing tokens or launch your own on Hedera. Instant trading for buyers, 
+                  simple creation tools for founders. Zero technical knowledge required.
                 </p>
                 <motion.div className="flex flex-col gap-2 min-[400px]:flex-row">
                   <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
