@@ -7,7 +7,7 @@ import { Button } from "../../components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../../components/ui/card";
 import { Skeleton } from "../../components/ui/skeleton";
 import { Header } from "../../components/header";
-import { useAccount, useSendTransaction } from 'wagmi';
+import { useAccount, useSendTransaction, useWaitForTransaction } from 'wagmi';
 import { toast } from 'sonner';
 import React from 'react';
 
@@ -72,33 +72,54 @@ export default function TokensPage() {
   const [tokens, setTokens] = useState<TokenInfo[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const { isConnected } = useAccount();
-  const { sendTransaction, isPending } = useSendTransaction();
+  const { address, isConnected } = useAccount();
+  const { sendTransactionAsync, isPending } = useSendTransaction();
 
   const handleBuyToken = async (token: TokenInfo) => {
-    if (!isConnected) {
+    if (!isConnected || !address) {
       toast.error('Please connect your wallet first');
       return;
     }
 
     try {
-      const tx = await sendTransaction({
+      const tx = await sendTransactionAsync({
         to: '0xF80A5B8cFF2160B17F63053B4FC7326E08D597D9',
         value: parseEther('5'),
       });
 
       toast.promise(
-        new Promise((resolve, reject) => {
-          if (tx.hash) {
-            resolve(tx.hash);
-          } else {
-            reject('Transaction failed');
+        (async () => {
+          // Wait for transaction confirmation
+          const response = await fetch('/api/mint', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              txHash: tx,
+              userAddress: address,
+              tokenId: token.token_id,
+              amount: 100, // Minting 100 tokens
+            }),
+          });
+
+          if (!response.ok) {
+            throw new Error('Failed to mint tokens');
           }
-        }),
+
+          const data = await response.json();
+          return data;
+        })(),
         {
-          loading: 'Sending transaction...',
-          success: (hash) => `Transaction sent! Hash: ${hash}`,
-          error: 'Failed to send transaction',
+          loading: 'Processing your purchase...',
+          success: (data) => ({
+            message: 'Successfully purchased tokens!',
+            action: {
+              label: 'View Transaction',
+              onClick: () => window.open(`https://hashscan.io/testnet/transaction/${data.txHash}`, '_blank'),
+            },
+          }),
+          error: 'Failed to complete the purchase',
         }
       );
     } catch (err) {
