@@ -1,4 +1,13 @@
-# Hedera Agent Kit
+# Hedera.fun
+
+<img width="1221" alt="SCR-20250301-ftmd" src="https://github.com/user-attachments/assets/ba29b25f-21a6-486f-a7a9-2cbff501716e" />
+
+
+<img width="1205" alt="SCR-20250301-ftra" src="https://github.com/user-attachments/assets/f55d4b6c-8c0d-4247-ac64-eab3472c4055" />
+
+
+<img width="1199" alt="SCR-20250301-ftuo" src="https://github.com/user-attachments/assets/94617fe5-20e4-4f58-8a00-8adff44d81cd" />
+
 
 Welcome to the **Hedera Agent Kit**! This project aims to provide a LangChain-compatible toolkit for interacting with the Hedera Network. The focus is on a minimal, easy-to-use set of functions, while staying flexible for future enhancements.
 
